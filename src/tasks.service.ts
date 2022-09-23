@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import crawler from './crawler';
-require('chromedriver');
 
 @Injectable()
 export class TasksService {

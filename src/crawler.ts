@@ -30,6 +30,9 @@ async function crawler() {
     );
     const userId = process.env.USER_ID;
     copy(userId);
+    /**
+     * @see https://stackoverflow.com/questions/8683895/how-do-i-determine-the-current-operating-system-with-node-js
+     */
     const { platform } = process;
     const copyCommand =
       platform === 'darwin' ? Key.COMMAND + 'v' : Key.CONTROL + 'v';
