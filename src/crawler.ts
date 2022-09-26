@@ -17,7 +17,7 @@ async function findElementTimeout(
 ) {
   const findElement = await driver.wait(
     until.elementLocated(By.css(cssSelector)),
-    delay || 3000,
+    delay || 5000,
   );
   return findElement;
 }
@@ -41,14 +41,14 @@ async function crawler() {
     const loginBtn = await driver.findElement(
       By.css('.alchemy-faucet-login-nav-col button'),
     );
-    await loginBtn.click();
+    await loginBtn.sendKeys(Key.ENTER);
 
     const inputId = await findElementTimeout(
       driver,
       '#gatsby-focus-wrapper form label input[type=email]',
     );
     const userId = process.env.USER_ID;
-    copy(userId);
+    await copy(userId);
     /**
      * @see https://stackoverflow.com/questions/8683895/how-do-i-determine-the-current-operating-system-with-node-js
      */
@@ -70,18 +70,18 @@ async function crawler() {
     const addressInput = await findElementTimeout(
       driver,
       `${faucetAddressFormClassName} input.alchemy-faucet-panel-input-text`,
-      5000,
+      10000,
     );
     const address = process.env.RECEIVE_ADDRESS;
-    copy(address);
+    await copy(address);
     await addressInput.sendKeys(copyCommand);
 
     const faucetBtn = await findElementTimeout(
       driver,
       `${faucetAddressFormClassName} button.alchemy-faucet-button`,
-      5000,
+      10000,
     );
-    await faucetBtn.click();
+    await faucetBtn.sendKeys(Key.ENTER);
   } catch (e) {
     console.error(e);
   } finally {
