@@ -1,10 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
-import crawler from './crawler';
+import CrawlerService from './crawler/crawler.service';
 
 @Controller()
 export class AppController {
+  constructor(private readonly crawlerService: CrawlerService) {}
+
   @Get('crawling')
-  async crawling() {
-    crawler();
+  crawling() {
+    this.crawlerService.getGoerliFaucet();
   }
 }
