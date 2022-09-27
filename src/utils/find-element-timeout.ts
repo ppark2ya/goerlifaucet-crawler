@@ -8,7 +8,7 @@ async function findElementTimeout(
 ) {
   const findElement = await driver.wait(
     until.elementLocated(By.css(cssSelector)),
-    delay || 5000,
+    delay || 15000,
   );
   return findElement;
 }

@@ -12,13 +12,17 @@ export class CrawlerService {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: LoggerService;
 
-  async getGoerliFaucet() {
+  async getGoerliFaucet(userId: string, userPwd: string, address: string) {
+    this.logger.debug(`userId: ${userId}`);
+    this.logger.debug(`userPwd: ${userPwd}`);
+    this.logger.debug(`address: ${address}`);
+
     const faucetUrl = 'https://goerlifaucet.com/';
     const driver = await new Builder()
       .forBrowser(Browser.CHROME)
       .setChromeOptions(
         new chrome.Options()
-          .headless()
+          // .headless()
           .addArguments(
             '--incognito',
             '--disable-gpu',
@@ -29,7 +33,7 @@ export class CrawlerService {
       .build();
     try {
       await driver.get(faucetUrl);
-      this.logger.log('goerli faucet connect!');
+      this.logger.log('goerli faucet connected!');
 
       const loginBtn = await driver.findElement(
         By.css('.alchemy-faucet-login-nav-col button'),
@@ -43,9 +47,6 @@ export class CrawlerService {
       );
       this.logger.log('find input element success');
 
-      const userId = process.env.USER_ID;
-      this.logger.debug(`userId: ${userId}`);
-
       await copy(userId);
       inputId.sendKeys(copyCommand());
 
@@ -55,7 +56,6 @@ export class CrawlerService {
       );
       this.logger.log('find password element success');
 
-      const userPwd = process.env.USER_PASSWORD;
       inputPwd.sendKeys(userPwd, Key.ENTER);
 
       const faucetAddressFormClassName =
@@ -64,12 +64,8 @@ export class CrawlerService {
       const addressInput = await findElementTimeout(
         driver,
         `${faucetAddressFormClassName} input.alchemy-faucet-panel-input-text`,
-        10000,
       );
       this.logger.log('find address input element success');
-
-      const address = process.env.RECEIVE_ADDRESS;
-      this.logger.debug(`address: ${address}`);
 
       await copy(address);
       await addressInput.sendKeys(copyCommand());
@@ -77,7 +73,6 @@ export class CrawlerService {
       const faucetBtn = await findElementTimeout(
         driver,
         `${faucetAddressFormClassName} button.alchemy-faucet-button`,
-        10000,
       );
       this.logger.log('find faucet button element success');
       await faucetBtn.sendKeys(Key.ENTER);
