@@ -5,6 +5,7 @@ import { TasksService } from './tasks/tasks.service';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from './logger/logger.module';
 import CrawlerService from './crawler/crawler.service';
+import { MemoryDB } from './utils/memory.db';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import CrawlerService from './crawler/crawler.service';
     LoggerModule,
   ],
   controllers: [AppController],
-  providers: [TasksService, CrawlerService],
+  providers: [TasksService, CrawlerService, MemoryDB],
 })
 export class AppModule {}

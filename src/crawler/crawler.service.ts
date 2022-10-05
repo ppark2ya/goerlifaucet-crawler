@@ -1,9 +1,12 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Builder, Browser, By, Key } from 'selenium-webdriver';
+import { MILLISECOND } from 'src/constants/time';
 import copyCommand from 'src/utils/copy-command';
 import copy from 'src/utils/copy-to-clipboard';
 import findElementTimeout from 'src/utils/find-element-timeout';
+import { MemoryDB } from 'src/utils/memory.db';
+import taskDelay from 'src/utils/task-delay';
 const chrome = require('selenium-webdriver/chrome');
 require('chromedriver');
 
@@ -12,7 +15,16 @@ export class CrawlerService {
   @Inject(WINSTON_MODULE_NEST_PROVIDER)
   private readonly logger: LoggerService;
 
-  async getGoerliFaucet(userId: string, userPwd: string, address: string) {
+  @Inject(MemoryDB)
+  private readonly memoryDB: MemoryDB;
+
+  async getGoerliFaucet(
+    userId: string,
+    userPwd: string,
+    address: string,
+    delay = MILLISECOND,
+  ) {
+    await taskDelay(delay);
     this.logger.debug(`userId: ${userId}`);
     this.logger.debug(`userPwd: ${userPwd}`);
     this.logger.debug(`address: ${address}`);
@@ -84,6 +96,7 @@ export class CrawlerService {
       setTimeout(async () => {
         await driver.quit();
         this.logger.debug('driver disconnected');
+        this.memoryDB.set(userId, new Date().getTime());
       }, 60000);
     }
   }
